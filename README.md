@@ -8,3 +8,8 @@ It is possible to search for other atoms (based on the atom name) and as such us
 ## Requirements
   * [Open Babel](http://openbabel.org) with [python bindings](http://openbabel.org/docs/current/UseTheLibrary/PythonInstall.html)
   * Numpy
+
+## Examples
+You can it out by running
+
+  python rc.py examples/gb3_00000.pdb

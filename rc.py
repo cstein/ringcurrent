@@ -51,12 +51,12 @@ def RingCenterNormal(residue, ATOMS):
 
     return center, n
 
-def HistidineCenterNormal(residue):
-    """ Neutral histidine """
+def HistidoneCenterNormal(residue):
+    """ Neutral histidone """
     raise NotImplementedError("HIS has not been implemented")
 
-def HistidineCenterNormalp(residue):
-    """ Protonated histidine """
+def HistidoneCenterNormalp(residue):
+    """ Protonated histidone """
     raise NotImplementedError("HIS+ has not been implemented")
 
 def PhenylAlanineCenterNormal(residue):
@@ -85,8 +85,8 @@ def TyrosineCenterNormal(residue):
 # Data from the paper (10.1021/ct2002607) for the point-dipole model of HN
 RCPD_FN = {'PHE':  PhenylAlanineCenterNormal,
            'TYR':  TyrosineCenterNormal,
-           'HIS+': HistidineCenterNormalp,
-           'HIS':  HistidineCenterNormal,
+           'HIS+': HistidoneCenterNormalp,
+           'HIS':  HistidoneCenterNormal,
            'TRP5': Tryptophan5CenterNormal,
            'TRP6': Tryptophan6CenterNormal}
 
@@ -116,6 +116,12 @@ class Ring(object):
         n = "[{0:9.4f}, {1:9.4f}, {2:9.4f}]".format(self.n[0], self.n[1], self.n[2])
         return "Ring({}, {}, {}, {}, '{}')".format(r, n, self.HN, self.B, self.name)
 
+    def __str__(self):
+        """ Print-friendly represenation """
+        r = "({0:9.4f}, {1:9.4f}, {2:9.4f})".format(self.r[0], self.r[1], self.r[2])
+        s = "{0:s} at R = {1:s}".format(self.name, r)
+        return s
+
 def load(filename):
     """ Loads a .pdb file into an openbabel molecule """
     obc = openbabel.OBConversion()
@@ -126,9 +132,21 @@ def load(filename):
     return mol
 
 def Rings(mol):
-    """ Returns a list of ring data from mol """
+    """ Returns a list of ring data from mol.
+ 
+        All data is based on the point-dipole model by Christensen et al (DOI: 10.1021/ct2002607)
+
+        Arguments:
+        ----------
+        mol : OBMol molecule with molecule information (loaded from .pdb file)
+
+        Returns:
+        --------
+        list of rings (instatiated from the Ring class)
+    """
 
     rings = []
+    B = RCPD_B
     for i_residue, residue in enumerate(openbabel.OBResidueIter(mol)):
         name = residue.GetName()
         if not name in ["SOL", "NA"]:
@@ -155,7 +173,6 @@ def Rings(mol):
                     rings.append( Ring(r, n, HN, B, name) )
 
                     r, n = RCPD_FN['TRP6'](residue)
-                    B = RCPD_B
                     HN = RCPD_HN['TRP6']
                     rings.append( Ring(r, n, HN, B, name) )
     return rings
@@ -190,10 +207,10 @@ def RingCurrentCorrection(rings, h_r):
     """ Calculates the ring current correction based on rings and atom coordinates
 
         NOTE: This does not distinguish between atom types, i.e. HN and HA so be careful
-              as this work is only dine for HN.
+              as this work is only done for HN.
 
               Results for HA has been attemped using the same data and errors of around
-              5% - 10% is to be expected.
+              5% - 10% is to be expected (private communication with first author of paper)
     """
     data = numpy.zeros((len(h_r), len(rings)))
     for i_ring, ring in enumerate(rings):
@@ -222,6 +239,10 @@ if __name__ == '__main__':
         if len(rings) == 0:
             continue
 
+        print "Found {0:3d} rings.".format(len(rings))
+        for iring, ring in enumerate(rings):
+            print "{0:5d} - {1:s}".format(iring+1, ring)
+
         hn_idx, hn_r = AtomLists(mol, ["HN", "HA"]) # search through HN and HA atoms
         data = RingCurrentCorrection(rings, hn_r)
         l.append(data)
@@ -230,5 +251,7 @@ if __name__ == '__main__':
     dd = numpy.array(l)
     mm = numpy.mean(dd, axis=0)
     
+    print ""
+    print "Final ring-current corrections:".format()
     for id, m in zip(hn_idx, mm):
         print "{0:4d}{1:9.3f}".format(id, m)

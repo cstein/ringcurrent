@@ -10,6 +10,6 @@ It is possible to search for other atoms (based on the atom name) and as such us
   * Numpy
 
 ## Examples
-You can it out by running
+You can test it out by running
 
     python rc.py examples/gb3_00000.pdb

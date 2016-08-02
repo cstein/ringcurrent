@@ -51,12 +51,12 @@ def RingCenterNormal(residue, ATOMS):
 
     return center, n
 
-def HistidoneCenterNormal(residue):
-    """ Neutral histidone """
+def HistidineCenterNormal(residue):
+    """ Neutral histidine """
     raise NotImplementedError("HIS has not been implemented")
 
-def HistidoneCenterNormalp(residue):
-    """ Protonated histidone """
+def HistidineCenterNormalp(residue):
+    """ Protonated histidine """
     raise NotImplementedError("HIS+ has not been implemented")
 
 def PhenylAlanineCenterNormal(residue):
@@ -85,8 +85,8 @@ def TyrosineCenterNormal(residue):
 # Data from the paper (10.1021/ct2002607) for the point-dipole model of HN
 RCPD_FN = {'PHE':  PhenylAlanineCenterNormal,
            'TYR':  TyrosineCenterNormal,
-           'HIS+': HistidoneCenterNormalp,
-           'HIS':  HistidoneCenterNormal,
+           'HIS+': HistidineCenterNormalp,
+           'HIS':  HistidineCenterNormal,
            'TRP5': Tryptophan5CenterNormal,
            'TRP6': Tryptophan6CenterNormal}
 

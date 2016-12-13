@@ -1,5 +1,5 @@
 # ringcurrent
-A python implementation of ring current effects on protein backbone amide protons from the [publication](http://dx.doi.org/10.1021/ct2002607) by [Anders S. Christensen](https://github.com/andersx), Stephan Sauer and [Jan H Jensen](https://github.com/jhjensen2)
+A python implementation of [*Definitive Benchmark Study of Ring Current Effects on Amide Proton Chemical Shifts*](http://dx.doi.org/10.1021/ct2002607) by [Anders S. Christensen](https://github.com/andersx), Stephan Sauer and [Jan H Jensen](https://github.com/jhjensen2)
 
 The implementation uses the point-dipole approximation to evaluate how aromatic rings changes the chemical shift of the backbone amide proton.
 
